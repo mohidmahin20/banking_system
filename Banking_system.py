@@ -50,7 +50,7 @@ class User:
         else :
             return ' cannot take more than two loans.'
             
-    def transfer(self,other_4user,amount):
+    def transfer(self,other_user,amount):
         if amount>0:
             if self.balance>=amount:
                 if other_user:
