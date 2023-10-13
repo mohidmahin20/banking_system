@@ -19,7 +19,7 @@ class User:
         if amount>0:
             self.balance += amount
             self.transaction_history.append(f'Deposited: {amount}')
-            return f'defosited {amount}. current balance{self.balance}'
+            return f'defosited {amount}. current balance {self.balance}'
         
         else: 
             return 'invalid deposit amount.'
@@ -28,7 +28,7 @@ class User:
         if amount > 0:
             self.balance -=amount
             self.transaction_history.append(f'withdrawn{amount}')
-            return f'withdrwan{amount}. current balance{self.balance}'
+            return f'withdrwan{amount}. current balance {self.balance}'
         else : 
             return 'withdrawal amount exceeded'
 
@@ -50,15 +50,15 @@ class User:
         else :
             return ' cannot take more than two loans.'
             
-    def transfer(self,other_user,amount):
+    def transfer(self,other_4user,amount):
         if amount>0:
             if self.balance>=amount:
                 if other_user:
                     self.balance-=amount
                     other_user.balance +=amount
                     self.transaction_history.append(f'transfered {amount} to account {other_user.account_number}')
-                    other_user.transaction_history.apped(f'recieved {amount} from  account {self.account_number}')
-                    return f'transfered {amount} to account num {other_user.account_number} . current balance{self.balance}'
+                    other_user.transaction_history.append(f'recieved {amount} from  account {self.account_number}')
+                    return f'transfered {amount} to account num {other_user.account_number} . current balance {self.balance}'
                 else:
                     return 'account does not exist'
             else:
@@ -114,10 +114,10 @@ class Admin:
 
 def main():
     admin = Admin()
-    user1 = User("John", "john@example.com", "123 Main St", "Savings")
-    user2 = User("Alice", "alice@example.com", "456 Elm St", "Current")
+    user1 = User("karim", "karim@example.com", "dhaka", "Savings")
+    user2 = User("Rahim", "rahim@example.com", "mym", "Current")
 
-    print("Welcome to the Banking Management System")
+    print("----Welcome to the Banking Management System----")
 
     while True:
         print("\nOptions for User:")
@@ -152,6 +152,7 @@ def main():
             amount = float(input("Enter the loan amount: "))
             print(user1.take_loan(amount))
         elif option == "6":
+            
             others_account_number = int(input("Enter the others's account number: "))
             amount = float(input("Enter the transfer amount: "))
             others = None
