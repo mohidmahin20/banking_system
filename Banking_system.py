@@ -21,12 +21,12 @@ class User:
             return 'Invalid deposit amount.'
 
     def withdraw(self, amount):
-        if amount > 0:
+        if amount > 0 and self.balance >= amount:
             self.balance -= amount
             self.transaction_history.append(f'Withdrawn: {amount}')
             return f'Withdrawn: {amount}. Current balance {self.balance}'
         else:
-            return 'Withdrawal amount exceeded'
+            return 'Withdrawal amount exceeded or insufficient balance'
 
     def check_balance(self):
         return f'Current balance: {self.balance}'
@@ -47,20 +47,14 @@ class User:
             return 'Cannot take more than two loans.'
 
     def transfer(self, other_user, amount):
-        if amount > 0:
-            if self.balance >= amount:
-                if other_user:
-                    self.balance -= amount
-                    other_user.balance += amount
-                    self.transaction_history.append(f'Transferred {amount} to account {other_user.account_number}')
-                    other_user.transaction_history.append(f'Received {amount} from account {self.account_number}')
-                    return f'Transferred {amount} to account number {other_user.account_number}. Current balance {self.balance}'
-                else:
-                    return 'Account does not exist'
-            else:
-                return 'Insufficient balance'
+        if amount > 0 and self.balance >= amount:
+            self.balance -= amount
+            other_user.balance += amount
+            self.transaction_history.append(f'Transferred {amount} to account {other_user.account_number}')
+            other_user.transaction_history.append(f'Received {amount} from account {self.account_number}')
+            return f'Transferred {amount} to account number {other_user.account_number}. Current balance {self.balance}'
         else:
-            return 'Invalid transfer amount'
+            return 'Invalid transfer amount or insufficient balance'
 
     def is_bankrupt(self):
         if self.balance < 0:
@@ -107,10 +101,9 @@ class Admin:
         status = "enabled" if self.loan_feature_enabled else "disabled"
         return f"Loan Feature is now {status}"
 
-
 def main():
     admin = Admin()
-
+    
     print("----Welcome to the Banking Management System----")
 
     while True:
@@ -118,7 +111,7 @@ def main():
             print("No user accounts available. Please create an account (Option 7).")
 
         print("\nOptions for User:")
-        print("1: Create Account ")
+        print("1: Create Account")
         print("2: Deposit")
         print("3: Withdraw")
         print("4: Check Balance")
@@ -144,45 +137,70 @@ def main():
             print(admin.create_account(user))
         
         elif admin.users and option == "2":
-            amount = float(input("Enter the deposit amount: "))
-            print(admin.users[0].deposit(amount))
+            for user in admin.users:
+                amount = float(input(f"Enter the deposit amount for {user.name}: "))
+                print(user.deposit(amount))
+        
         elif admin.users and option == "3":
-            amount = float(input("Enter the withdrawal amount: "))
-            print(admin.users[0].withdraw(amount))
+            for user in admin.users:
+                amount = float(input(f"Enter the withdrawal amount for {user.name}: "))
+                print(user.withdraw(amount))
+        
         elif admin.users and option == "4":
-            print(admin.users[0].check_balance())
+            for user in admin.users:
+                print(user.check_balance())
+        
         elif admin.users and option == "5":
-            print(admin.users[0].view_transaction_history())
+            for user in admin.users:
+                user.view_transaction_history()
+        
         elif admin.users and option == "6":
-            amount = float(input("Enter the loan amount: "))
-            print(admin.users[0].take_loan(amount))
+            for user in admin.users:
+                amount = float(input(f"Enter the loan amount for {user.name}: "))
+                print(user.take_loan(amount))
+        
         elif admin.users and option == "7":
-            others_account_number = int(input("Enter the other's account number: "))
-            amount = float(input("Enter the transfer amount: "))
-            others = None
-            for u in admin.users:
-                if u.account_number == others_account_number:
-                    others = u
+            sender_account_number = int(input("Enter your account number: "))
+            sender = None
+            for user in admin.users:
+                if user.account_number == sender_account_number:
+                    sender = user
                     break
-            if others:
-                print(admin.users[0].transfer(others, amount))
+            if sender:
+                others_account_number = int(input("Enter the recipient's account number: "))
+                amount = float(input("Enter the transfer amount: "))
+                recipient = None
+                for user in admin.users:
+                    if user.account_number == others_account_number:
+                        recipient = user
+                        break
+                if recipient:
+                    print(sender.transfer(recipient, amount))
+                else:
+                    print("Recipient's account does not exist.")
             else:
-                print("Other user's account does not exist.")
-       
-        elif option == "9":
+                print("Your account does not exist.")
+        
+        elif option == "8":
             account_number = int(input("Enter the account number to delete: "))
             print(admin.delete_account(account_number))
-        elif option == "10":
+        
+        elif option == "9":
             print(admin.view_user_accounts())
-        elif option == "11":
+        
+        elif option == "10":
             print(admin.total_available_balance())
-        elif option == "12":
+        
+        elif option == "11":
             print(admin.total_loan_amount())
-        elif option == "13":
+        
+        elif option == "12":
             print(admin.toggle_loan_feature())
-        elif option == "14":
+        
+        elif option == "13":
             print("Exiting...")
             break
+        
         else:
             print("Invalid option. Please try again.")
 
