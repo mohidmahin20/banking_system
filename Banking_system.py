@@ -118,39 +118,45 @@ def main():
             print("No user accounts available. Please create an account (Option 7).")
 
         print("\nOptions for User:")
-       
-        print("1: Deposit")
-        print("2: Withdraw")
-        print("3: Check Balance")
-        print("4: View Transaction History")
-        print("5: Take Loan")
-        print("6: Transfer Money")
-        print("\nOptions for Admin:")
-        print("7: Create Account (Admin)")
+        print("1: Create Account ")
+        print("2: Deposit")
+        print("3: Withdraw")
+        print("4: Check Balance")
+        print("5: View Transaction History")
+        print("6: Take Loan")
+        print("7: Transfer Money")
+        
         print("8: Delete User Account")
-        print("9 View User Accounts")
+        print("9: View User Accounts")
         print("10: Total Available Balance")
         print("11: Total Loan Amount")
         print("12: Toggle Loan Feature")
         print("13: Exit")
 
         option = input("Select an option: ")
-
+        if option == "1":
+            user = User(
+                input("Enter name: "),
+                input("Enter email: "),
+                input("Enter address: "),
+                input("Enter account type (Savings or Current): ")
+            )
+            print(admin.create_account(user))
         
-        if admin.users and option == "1":
+        elif admin.users and option == "2":
             amount = float(input("Enter the deposit amount: "))
             print(admin.users[0].deposit(amount))
-        elif admin.users and option == "2":
+        elif admin.users and option == "3":
             amount = float(input("Enter the withdrawal amount: "))
             print(admin.users[0].withdraw(amount))
-        elif admin.users and option == "3":
-            print(admin.users[0].check_balance())
         elif admin.users and option == "4":
-            print(admin.users[0].view_transaction_history())
+            print(admin.users[0].check_balance())
         elif admin.users and option == "5":
+            print(admin.users[0].view_transaction_history())
+        elif admin.users and option == "6":
             amount = float(input("Enter the loan amount: "))
             print(admin.users[0].take_loan(amount))
-        elif admin.users and option == "6":
+        elif admin.users and option == "7":
             others_account_number = int(input("Enter the other's account number: "))
             amount = float(input("Enter the transfer amount: "))
             others = None
@@ -162,26 +168,19 @@ def main():
                 print(admin.users[0].transfer(others, amount))
             else:
                 print("Other user's account does not exist.")
-        elif option == "7":
-            user = User(
-                input("Enter name: "),
-                input("Enter email: "),
-                input("Enter address: "),
-                input("Enter account type (Savings or Current): ")
-            )
-            print(admin.create_account(user))
-        elif option == "8":
+       
+        elif option == "9":
             account_number = int(input("Enter the account number to delete: "))
             print(admin.delete_account(account_number))
-        elif option == "9":
-            print(admin.view_user_accounts())
         elif option == "10":
-            print(admin.total_available_balance())
+            print(admin.view_user_accounts())
         elif option == "11":
-            print(admin.total_loan_amount())
+            print(admin.total_available_balance())
         elif option == "12":
-            print(admin.toggle_loan_feature())
+            print(admin.total_loan_amount())
         elif option == "13":
+            print(admin.toggle_loan_feature())
+        elif option == "14":
             print("Exiting...")
             break
         else:
