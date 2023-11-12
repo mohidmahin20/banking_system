@@ -9,7 +9,7 @@ class User:
         self.balance = 0
         self.account_number = User.account_number_counter
         self.transaction_history = []
-        self.loan_count = 0
+        self.loan_count = 1
         User.account_number_counter += 1
 
     def deposit(self, amount):
